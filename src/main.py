@@ -6,6 +6,7 @@ from src.entities.entity import Entity
 
 c = Entity(50, 50)
 
+
 # displayed application name
 pygame.display.set_caption(vc.game_name)
 
@@ -23,7 +24,8 @@ while True:
     view.clear_screen()
 
     # todo temp
-    c.move(0.2, 0.3)
+    c.spd_y += 0.01
+    c.spd_x += 0.01
     c.act()
 
     # draws on display
