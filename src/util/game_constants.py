@@ -1,3 +1,4 @@
+game_name = 'Hamadryad'
 
 game_window_size = 900, 600
 

@@ -2,13 +2,12 @@ import pygame
 import src.util.game_constants as vc
 import src.view.view as view
 from src.event_handler.event_handler import handle
-from src.Entities.entity import Entity
+from src.entities.entity import Entity
 
-# =========================== GAME INIT ===========================
 c = Entity(50, 50)
 
 # displayed application name
-pygame.display.set_caption('Hamadryad')
+pygame.display.set_caption(vc.game_name)
 
 # main game loop
 while True:
