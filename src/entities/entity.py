@@ -13,16 +13,16 @@ class Entity:
 
     # movement-in-direction-possible checking
     def possible_move_left(self):
-        return False  #todo
+        return True  # todo
 
     def possible_move_right(self):
-        return False  #todo
+        return True  # todo
 
     def possible_move_up(self):
-        return False  # todo
+        return True  # todo
 
     def possible_move_down(self):
-        return False  # todo
+        return True  # todo
 
     # describes total of everything that the entity does during one frame
     def act(self):
@@ -56,6 +56,7 @@ class Entity:
 
     # entity travels a distance equal to the passed values
     def move(self, x=0, y=0):
+        # todo possible move checkers here
         self.x += x
         self.y += y
 
@@ -72,13 +73,13 @@ class CharacterEntity(Entity):
 
     # character moves left
     def move_left(self):
-        self.spd_x -= ec.move_acc_increment*self.speed
-        self.spd_x = self.spd_x if self.spd_x >= -self.speed else -self.speed
+        self.spd_x -= ec.move_acc_increment*self.hspeed
+        self.spd_x = self.spd_x if self.spd_x >= -self.hspeed else -self.hspeed
 
     # character moves right
     def move_right(self):
-        self.spd_x += ec.move_acc_increment*self.speed
-        self.spd_x = self.spd_x if self.spd_x <= self.speed else self.speed
+        self.spd_x += ec.move_acc_increment*self.hspeed
+        self.spd_x = self.spd_x if self.spd_x <= self.hspeed else self.hspeed
 
     # character's first action
     def action_1(self):
@@ -106,15 +107,14 @@ class CharacterEntity(Entity):
 
     # displays the entity on game screen
     def display(self):
-        print(self.size)
-        sprite = self.sprite_handler.get_sprite_at(0, 0)
+        sprite = self.sprite_handler.current_sprite
         surface = pygame.image.fromstring(sprite.tobytes(), sprite.size, sprite.mode)  # convert to pygame surface
         surface = pygame.transform.scale(surface, (self.size, self.size))
         surface_rect = (self.x, self.y)
         screen.blit(surface, surface_rect)
 
     # constructor
-    def __init__(self, sprite_set_path, hp, defence, power, speed, size, init_x, init_y):
+    def __init__(self, sprite_set_path, hp, defence, power, hspeed, size, init_x, init_y):
         Entity.__init__(self, init_x, init_y)
 
         # character's health
@@ -128,8 +128,8 @@ class CharacterEntity(Entity):
         # increases effectiveness of character's actions
         self.power = power
 
-        # limits character's movement speed
-        self.speed = speed
+        # limits character's horizontal movement speed
+        self.hspeed = hspeed
 
         # character's size (determines hit-boxes, drawn images size ...)
         self.size = size
@@ -141,14 +141,46 @@ class CharacterEntity(Entity):
 # parent class to all non-flying characters
 class GroundCharacterEntity(CharacterEntity):
 
+    # describes changes to character speed caused by outside forces
+    # (friction, gravity, obstacles)
+    def adjust_speed(self):
+        self.fall()
+        # todo
+
+    # character falling (called every frame)
+    def fall(self):
+        self.spd_y += ec.move_acc_increment*ec.max_fall_spd
+        self.spd_y = self.spd_y if self.spd_y <= ec.max_fall_spd else ec.max_fall_spd
+
+    # jump
+    def jump(self):
+        if self.possible_move_down():  # prevents "mid-air-jumps"
+            self.spd_y = -self.jump_speed
+
     # constructor
-    def __init__(self, sprite_set_path, hp=10, defence=0, power=10, speed=1, size=32, init_x=0, init_y=0):
-        CharacterEntity.__init__(self, sprite_set_path, hp, defence, power, speed, size, init_x, init_y)
+    def __init__(self, sprite_set_path, hp=10, defence=0, power=10, hspeed=1, size=32, init_x=0, init_y=0, jump_speed=20):
+        CharacterEntity.__init__(self, sprite_set_path, hp, defence, power, hspeed, size, init_x, init_y)
+
+        # vertical speed applied when character jumps
+        self.jump_speed = jump_speed
 
 
 # parent class to all non-flying characters
 class FlyingCharacterEntity(CharacterEntity):
 
+    # character moves left
+    def move_up(self):
+        self.spd_y -= ec.move_acc_increment * self.vspeed
+        self.spd_y = self.spd_y if self.spd_y >= -self.vspeed else -self.vspeed
+
+    # character moves right
+    def move_down(self):
+        self.spd_y += ec.move_acc_increment * self.vspeed
+        self.spd_y = self.spd_y if self.spd_y <= self.vspeed else self.vspeed
+
     # constructor
-    def __init__(self, sprite_set_path, hp=10, defence=0, power=10, speed=1, size=32, init_x=0, init_y=0):
-        CharacterEntity.__init__(self, sprite_set_path, hp, defence, power, speed, size, init_x, init_y)
+    def __init__(self, sprite_set_path, hp=10, defence=0, power=10, hspeed=1, size=32, init_x=0, init_y=0, vspeed=1):
+        CharacterEntity.__init__(self, sprite_set_path, hp, defence, power, hspeed, size, init_x, init_y)
+
+        # limits character's vertical movement speed
+        self.vspeed = vspeed

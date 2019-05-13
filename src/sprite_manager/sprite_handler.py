@@ -11,9 +11,6 @@ border_width = 1
 # parent class to character and particle sprite handlers
 class SpriteHandler:
 
-    # current to-be-displayed sprite
-    current_sprite = None
-
     # returns sprite at location (x,y) from sprite set
     def get_sprite_at(self, x, y):
         x = x*(sprite_size+border_width)
@@ -27,6 +24,9 @@ class SpriteHandler:
         # single image containing all of the entity's sprites
         abs_path = os.path.normpath(os.getcwd() + os.sep + os.pardir) + '\\' + sprite_set_path
         self.sprite_set = Image.open(abs_path)
+
+        # current to-be-displayed sprite
+        self.current_sprite = self.get_sprite_at(0, 0)
 
 
 # Sprite handler for characters

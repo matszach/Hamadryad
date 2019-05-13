@@ -5,7 +5,8 @@ from src.event_handler.event_handler import handle
 from src.entities.entity import GroundCharacterEntity
 
 
-c = GroundCharacterEntity(sprite_set_path='resources/template16.png', speed=5)
+c = GroundCharacterEntity(sprite_set_path='resources/sprites/template16.png', hspeed=5, init_y=200)
+c.jump()
 
 # displayed application name
 pygame.display.set_caption(vc.game_name)
