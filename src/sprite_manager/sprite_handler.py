@@ -27,6 +27,7 @@ class SpriteHandler:
         self.sprite_set = Image.open(sprite_set_path)
 
 
+# Sprite handler for characters
 class CharacterSpriteHandler(SpriteHandler):
 
     # constructor
