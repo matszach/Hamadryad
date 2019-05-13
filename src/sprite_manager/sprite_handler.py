@@ -1,4 +1,5 @@
 from PIL import Image
+import os
 
 # sizes of individual sprites
 sprite_size = 16
@@ -24,7 +25,8 @@ class SpriteHandler:
     def __init__(self, sprite_set_path):
 
         # single image containing all of the entity's sprites
-        self.sprite_set = Image.open(sprite_set_path)
+        abs_path = os.path.normpath(os.getcwd() + os.sep + os.pardir) + '\\' + sprite_set_path
+        self.sprite_set = Image.open(abs_path)
 
 
 # Sprite handler for characters

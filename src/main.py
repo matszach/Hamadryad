@@ -2,10 +2,10 @@ import pygame
 import src.util.game_constants as vc
 import src.view.view as view
 from src.event_handler.event_handler import handle
-from src.entities.entity import Entity
+from src.entities.entity import GroundCharacterEntity
 
-c = Entity(50, 50)
 
+c = GroundCharacterEntity(sprite_set_path='resources/template16.png', speed=5)
 
 # displayed application name
 pygame.display.set_caption(vc.game_name)
@@ -24,8 +24,7 @@ while True:
     view.clear_screen()
 
     # todo temp
-    c.spd_y += 0.01
-    c.spd_x += 0.01
+    c.move_right()
     c.act()
 
     # draws on display

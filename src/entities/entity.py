@@ -60,7 +60,7 @@ class Entity:
         self.y += y
 
     # constructor
-    def __init__(self, init_x=0, init_y=0):
+    def __init__(self, init_x, init_y):
 
         # current location
         self.x = init_x
@@ -72,13 +72,13 @@ class CharacterEntity(Entity):
 
     # character moves left
     def move_left(self):
-        self.spd_x += ec.move_acc_increment
-        self.spd_x = self.spd_x if self.spd_x <= self.speed else self.speed
+        self.spd_x -= ec.move_acc_increment*self.speed
+        self.spd_x = self.spd_x if self.spd_x >= -self.speed else -self.speed
 
     # character moves right
     def move_right(self):
-        self.spd_x -= ec.move_acc_increment
-        self.spd_x = self.spd_x if self.spd_x >= -self.speed else -self.speed
+        self.spd_x += ec.move_acc_increment*self.speed
+        self.spd_x = self.spd_x if self.spd_x <= self.speed else self.speed
 
     # character's first action
     def action_1(self):
@@ -106,12 +106,15 @@ class CharacterEntity(Entity):
 
     # displays the entity on game screen
     def display(self):
-        sprite = self.sprite_handler.current_sprite
-        img_rect = (self.size, self.size)
-        screen.blit(sprite, img_rect)
+        print(self.size)
+        sprite = self.sprite_handler.get_sprite_at(0, 0)
+        surface = pygame.image.fromstring(sprite.tobytes(), sprite.size, sprite.mode)  # convert to pygame surface
+        surface = pygame.transform.scale(surface, (self.size, self.size))
+        surface_rect = (self.x, self.y)
+        screen.blit(surface, surface_rect)
 
     # constructor
-    def __init__(self, sprite_set, hp=10, defence=0, power=10, speed=1, size=16, init_x=0, init_y=0):
+    def __init__(self, sprite_set_path, hp, defence, power, speed, size, init_x, init_y):
         Entity.__init__(self, init_x, init_y)
 
         # character's health
@@ -132,20 +135,20 @@ class CharacterEntity(Entity):
         self.size = size
 
         # manages character's sprite set
-        self.sprite_handler = CharacterSpriteHandler(sprite_set)
+        self.sprite_handler = CharacterSpriteHandler(sprite_set_path)
 
 
 # parent class to all non-flying characters
 class GroundCharacterEntity(CharacterEntity):
 
     # constructor
-    def __init__(self, sprite_set, hp=10, defence=0, power=10, speed=1, size=16, init_x=0, init_y=0):
-        CharacterEntity.__init__(sprite_set, hp, defence, power, speed, size, init_x, init_y)
+    def __init__(self, sprite_set_path, hp=10, defence=0, power=10, speed=1, size=32, init_x=0, init_y=0):
+        CharacterEntity.__init__(self, sprite_set_path, hp, defence, power, speed, size, init_x, init_y)
 
 
 # parent class to all non-flying characters
 class FlyingCharacterEntity(CharacterEntity):
 
     # constructor
-    def __init__(self, sprite_set, hp=10, defence=0, power=10, speed=1, size=16, init_x=0, init_y=0):
-        CharacterEntity.__init__(sprite_set, hp, defence, power, speed, size, init_x, init_y)
+    def __init__(self, sprite_set_path, hp=10, defence=0, power=10, speed=1, size=32, init_x=0, init_y=0):
+        CharacterEntity.__init__(self, sprite_set_path, hp, defence, power, speed, size, init_x, init_y)
