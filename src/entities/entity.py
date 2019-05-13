@@ -46,7 +46,9 @@ class Entity:
         self.y += y
 
     # constructor
-    def __init__(self, init_x=0, init_y=0):
+    def __init__(self,sprite_set, init_x=0, init_y=0):
+
+
 
         # current location
         self.x = init_x
