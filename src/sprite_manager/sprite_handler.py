@@ -37,4 +37,35 @@ class CharacterSpriteHandler(SpriteHandler):
         SpriteHandler.__init__(self, sprite_set_path)
 
 
+# Sprite handler for tile types
+class TileSpriteHandler(SpriteHandler):
+
+    # static subtype indicator dictionary
+    sub_loc = {
+        'l': (0, 0),
+        'u': (0, 1),
+        'r': (0, 2),
+        'b': (0, 3),
+        'lu': (1, 0),
+        'ru': (1, 1),
+        'rb': (1, 2),
+        'lb': (1, 3),
+        'lt': (2, 0),
+        'ut': (2, 1),
+        'rt': (2, 2),
+        'bt': (2, 3),
+        'vo': (3, 0),
+        'ho': (3, 1),
+        'c': (3, 2),
+        's': (3, 3)
+    }
+
+    # returns sprite subtype
+    def get_subtype_sprite(self, subtype_indicator):
+        loc = self.sub_loc[subtype_indicator]
+        return self.get_sprite_at(loc[1], loc[0])
+
+    # constructor
+    def __init__(self, sprite_set_path):
+        SpriteHandler.__init__(self, sprite_set_path)
 
