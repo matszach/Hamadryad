@@ -7,6 +7,7 @@ import pygame
 current_level = load_level('level1')
 
 
+# draws level from current root position
 def draw_level(root_x, root_y):
     for y in range(int(gc.game_window_size[1]/gc.unit)):
         for x in range(int(gc.game_window_size[0]/gc.unit)):
