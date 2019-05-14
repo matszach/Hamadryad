@@ -37,7 +37,7 @@ class Entity:
         return current_level[lv_y][lv_x][0] == 0  # todo
 
     def possible_move_down(self):
-        lv_y = round(self.get_y_unit()+0.5)
+        lv_y = round(self.get_y_unit() + 0.5)
         lv_x = round(self.get_x_unit())
         return current_level[lv_y][lv_x][0] == 0  #todo
 
@@ -45,6 +45,7 @@ class Entity:
     def act(self):
         self.work()
         self.adjust_speed()
+        self.adjust_position()
         self.travel()
         self.select_sprite()
         self.display()
@@ -73,6 +74,11 @@ class Entity:
             self.spd_y = 0
         elif self.spd_y > 0 and not self.possible_move_down():
             self.spd_y = 0
+
+    # prevents the entity getting stuck in a wall/floor todo complete
+    def adjust_position(self):
+        if not self.possible_move_down():
+            self.y -= self.y % unit
 
     # applies current speed as movement
     def travel(self):
@@ -104,6 +110,18 @@ class CharacterEntity(Entity):
         self.spd_x += ec.move_acc_increment*self.hspeed
         self.spd_x = self.spd_x if self.spd_x <= self.hspeed else self.hspeed
 
+    # characters begins to slow down
+    def slow_down(self):
+        if not self.possible_move_down():
+            if self.spd_x > 0:
+                self.spd_x -= ec.slow_down_increment
+                if self.spd_x < 0:
+                    self.spd_x = 0
+            elif self.spd_x < 0:
+                self.spd_x += ec.slow_down_increment
+                if self.spd_x > 0:
+                    self.spd_x = 0
+
     # character's first action
     def action_1(self):
         pass  # todo
@@ -130,7 +148,7 @@ class CharacterEntity(Entity):
 
     # displays the entity on game screen
     def display(self):
-        sprite = self.sprite_handler.current_sprite
+        sprite = self.sprite_handler.pick_sprite(self.spd_x, self.spd_y)
         surface = pygame.image.fromstring(sprite.tobytes(), sprite.size, sprite.mode)  # convert to pygame surface
         surface = pygame.transform.scale(surface, (self.size, self.size))
         surface_rect = (self.x, self.y)
@@ -172,7 +190,7 @@ class GroundCharacterEntity(CharacterEntity):
 
     # character falling (called every frame)
     def fall(self):
-        self.spd_y += ec.move_acc_increment*ec.max_fall_spd
+        self.spd_y += ec.fall_acc_increment*ec.max_fall_spd
         self.spd_y = self.spd_y if self.spd_y <= ec.max_fall_spd else ec.max_fall_spd
 
     # jump
@@ -181,7 +199,7 @@ class GroundCharacterEntity(CharacterEntity):
             self.spd_y = -self.jump_speed
 
     # constructor
-    def __init__(self, sprite_set_path, hp=10, defence=0, power=10, hspeed=1, size=32, init_x=0, init_y=0, jump_speed=20):
+    def __init__(self, sprite_set_path, hp=10, defence=0, power=10, hspeed=1, size=unit, init_x=0, init_y=0, jump_speed=30):
         CharacterEntity.__init__(self, sprite_set_path, hp, defence, power, hspeed, size, init_x, init_y)
 
         # vertical speed applied when character jumps
@@ -207,3 +225,4 @@ class FlyingCharacterEntity(CharacterEntity):
 
         # limits character's vertical movement speed
         self.vspeed = vspeed
+

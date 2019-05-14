@@ -1,5 +1,6 @@
+from src.entities.entity import GroundCharacterEntity
 
-player = None
+player = GroundCharacterEntity(sprite_set_path='resources/sprites/character.png', hspeed=7,)
 monsters = []
 projectiles = []
 

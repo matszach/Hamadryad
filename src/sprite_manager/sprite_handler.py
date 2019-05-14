@@ -25,16 +25,73 @@ class SpriteHandler:
         abs_path = os.path.normpath(os.getcwd() + os.sep + os.pardir) + '\\' + sprite_set_path
         self.sprite_set = Image.open(abs_path)
 
-        # current to-be-displayed sprite
-        self.current_sprite = self.get_sprite_at(0, 0)
-
 
 # Sprite handler for characters
 class CharacterSpriteHandler(SpriteHandler):
 
+    # animation timer limit
+    a_lim = 31
+
+    # static sprite dictionary
+    sprite_paths = {
+        # speed x, speed y, timer : sprite x,y
+        (False, 0, 0): (0, 0),  # idle
+        (False, 0, 1): (0, 1),
+        (False, 0, 2): (0, 2),
+        (False, 0, 3): (0, 3),
+        (True, 0, 0): (1, 0),   # run / move hor
+        (True, 0, 1): (1, 1),
+        (True, 0, 2): (1, 2),
+        (True, 0, 3): (1, 3),
+        (False, 1, 0): (2, 0),  # fall / move down
+        (False, 1, 1): (2, 1),
+        (True, 1, 0): (2, 0),
+        (True, 1, 1): (2, 1),
+        (False, 1, 2): (2, 0),
+        (False, 1, 3): (2, 1),
+        (True, 1, 2): (2, 0),
+        (True, 1, 3): (2, 1),
+        (False, -1, 0): (2, 2),  # jump / move up
+        (False, -1, 1): (2, 3),
+        (True, -1, 0): (2, 2),
+        (True, -1, 1): (2, 2),
+        (False, -1, 2): (2, 2),
+        (False, -1, 3): (2, 3),
+        (True, -1, 2): (2, 2),
+        (True, -1, 3): (2, 3),
+        #todo other
+    }
+
+    # increments / resets animation timer
+    def animation_tick(self):
+        self.animation_timer += 1 if self.animation_timer < self.a_lim else -self.a_lim
+
+    # sets current sprite based on character's current speed values
+    def pick_sprite(self, spd_x, spd_y):
+
+        is_hor_mov = not spd_x == 0
+        ver_mov = 0 if spd_y == 0 else int(spd_y/abs(spd_y))
+        sprite_loc = self.sprite_paths[(is_hor_mov, ver_mov, int(self.animation_timer/8))]
+
+        sprite = self.get_sprite_at(sprite_loc[1], sprite_loc[0])
+
+        if spd_x > 0:
+            self.should_flip = False
+        elif spd_x < 0:
+            self.should_flip = True
+
+        if self.should_flip:
+            sprite = sprite.transpose(Image.FLIP_LEFT_RIGHT)
+
+        self.animation_tick()
+
+        return sprite
+
     # constructor
     def __init__(self, sprite_set_path):
         SpriteHandler.__init__(self, sprite_set_path)
+        self.animation_timer = 0
+        self.should_flip = False
 
 
 # Sprite handler for tile types

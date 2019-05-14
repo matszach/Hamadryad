@@ -2,13 +2,9 @@ import pygame
 import src.util.game_constants as vc
 import src.view.view as view
 from src.event_handler.event_handler import handle
-from src.entities.entity import GroundCharacterEntity
 from src.maps.map_handler import draw_level
-from src.entities.entity_handler import run_monsters, run_projectiles
-
-
-c = GroundCharacterEntity(sprite_set_path='resources/sprites/template16.png', hspeed=5, init_y=200)
-c.jump()
+from src.entities.entity_handler import run_monsters, run_projectiles, player
+from src.event_handler import key_handler
 
 # displayed application name
 pygame.display.set_caption(vc.game_name)
@@ -33,9 +29,9 @@ while True:
     run_monsters()
     run_projectiles()
 
-    # todo temp
-    c.move_right()
-    c.act()
+    # player acts
+    player.act()
+    key_handler.execute()
 
     # draws on display
     pygame.display.update()
