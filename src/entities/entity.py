@@ -22,7 +22,7 @@ class Entity:
         return True  # todo
 
     def possible_move_down(self):
-        return True  # todo
+        return True # todo
 
     # describes total of everything that the entity does during one frame
     def act(self):
@@ -46,9 +46,16 @@ class Entity:
         pass
 
     # describes changes to character speed caused by outside forces
-    # (friction, gravity, obstacles)
+    # (obstacles)
     def adjust_speed(self):
-        pass
+        if self.spd_x < 0 and not self.possible_move_left():
+            self.spd_x = 0
+        elif self.spd_x > 0 and not self.possible_move_right():
+            self.spd_x = 0
+        if self.spd_y < 0 and not self.possible_move_up():
+            self.spd_y = 0
+        elif self.spd_y > 0 and not self.possible_move_down():
+            self.spd_y = 0
 
     # applies current speed as movement
     def travel(self):
@@ -56,7 +63,6 @@ class Entity:
 
     # entity travels a distance equal to the passed values
     def move(self, x=0, y=0):
-        # todo possible move checkers here
         self.x += x
         self.y += y
 
@@ -142,10 +148,10 @@ class CharacterEntity(Entity):
 class GroundCharacterEntity(CharacterEntity):
 
     # describes changes to character speed caused by outside forces
-    # (friction, gravity, obstacles)
+    # (obstacles, friction, gravity)
     def adjust_speed(self):
         self.fall()
-        # todo
+        CharacterEntity.adjust_speed(self)
 
     # character falling (called every frame)
     def fall(self):
@@ -154,7 +160,7 @@ class GroundCharacterEntity(CharacterEntity):
 
     # jump
     def jump(self):
-        if self.possible_move_down():  # prevents "mid-air-jumps"
+        if not self.possible_move_down():  # prevents "mid-air-jumps"
             self.spd_y = -self.jump_speed
 
     # constructor

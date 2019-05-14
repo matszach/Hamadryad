@@ -3,6 +3,7 @@ import src.util.game_constants as vc
 import src.view.view as view
 from src.event_handler.event_handler import handle
 from src.entities.entity import GroundCharacterEntity
+from src.maps.map_handler import draw_level
 
 
 c = GroundCharacterEntity(sprite_set_path='resources/sprites/template16.png', hspeed=5, init_y=200)
@@ -23,6 +24,7 @@ while True:
 
     # "clears" the screen by filling it with background color
     view.clear_screen()
+    draw_level(0,0)
 
     # todo temp
     c.move_right()

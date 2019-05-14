@@ -1,6 +1,7 @@
 game_name = 'Hamadryad'
 
-game_window_size = 900, 600
+unit = 32
+game_window_size = 960, 640
 
 game_frame_delay = 30
 
