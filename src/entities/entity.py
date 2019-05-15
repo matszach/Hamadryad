@@ -9,10 +9,6 @@ from src.util.game_constants import unit, view_height, view_width
 # parent class to all in-game entities
 class Entity:
 
-    # current x and y speed
-    spd_x = 0
-    spd_y = 0
-
     # returns entity position in game units
     def get_x_unit(self):
         return self.x / unit
@@ -23,21 +19,21 @@ class Entity:
     # movement-in-direction-possible checking
     def possible_move_left(self):
         lv_y = round(self.get_y_unit())
-        lv_x = round(self.get_x_unit() - 0.5)
+        lv_x = round(self.get_x_unit() - 0.5*self.size/unit)
         return mh.current_level[lv_y][lv_x][0] == 0  # todo
 
     def possible_move_right(self):
         lv_y = round(self.get_y_unit())
-        lv_x = round(self.get_x_unit() + 0.5)
+        lv_x = round(self.get_x_unit() + 0.5*self.size/unit)
         return mh.current_level[lv_y][lv_x][0] == 0  # todo
 
     def possible_move_up(self):
-        lv_y = round(self.get_y_unit() - 0.5)
+        lv_y = round(self.get_y_unit() - 0.5*self.size/unit)
         lv_x = round(self.get_x_unit())
         return mh.current_level[lv_y][lv_x][0] == 0  # todo
 
     def possible_move_down(self):
-        lv_y = round(self.get_y_unit() + 0.5)
+        lv_y = round(self.get_y_unit() + 0.5*self.size/unit)
         lv_x = round(self.get_x_unit())
         return mh.current_level[lv_y][lv_x][0] == 0  #todo
 
@@ -62,6 +58,10 @@ class Entity:
     # (attacking, jumping, walking, other actions)
     def work(self):
         pass
+
+    # entity dies / is destroyed
+    def die(self):
+        self.dead = True
 
     # describes changes to character speed caused by outside forces
     # (obstacles)
@@ -90,11 +90,21 @@ class Entity:
         self.y += y
 
     # constructor
-    def __init__(self, init_x, init_y):
+    def __init__(self, init_x, init_y, size):
 
         # current location
         self.x = init_x
         self.y = init_y
+
+        # entity's size (determines hit-boxes, drawn images size ...)
+        self.size = size
+
+        # current x and y speed
+        self.spd_x = 0
+        self.spd_y = 0
+
+        # True means the entity getting deleted by entity handler
+        self.dead = False
 
 
 # parent class to all characters (Monsters, Player ...)
@@ -130,10 +140,6 @@ class CharacterEntity(Entity):
     def action_2(self):
         pass  # todo
 
-    # character dies
-    def die(self):
-        pass  # todo
-
     # character is damaged
     def take_damage(self, dmg):
         dmg = dmg - self.defence if dmg > self.defence else 0  # prevents negative damage
@@ -160,7 +166,7 @@ class CharacterEntity(Entity):
 
     # constructor
     def __init__(self, sprite_set_path, hp, defence, power, hspeed, size, init_x, init_y):
-        Entity.__init__(self, init_x, init_y)
+        Entity.__init__(self, init_x, init_y, size)
 
         # character's health
         # character dies when it's health reaches 0
@@ -175,9 +181,6 @@ class CharacterEntity(Entity):
 
         # limits character's horizontal movement speed
         self.hspeed = hspeed
-
-        # character's size (determines hit-boxes, drawn images size ...)
-        self.size = size
 
         # manages character's sprite set
         self.sprite_handler = CharacterSpriteHandler(sprite_set_path)
@@ -229,4 +232,45 @@ class FlyingCharacterEntity(CharacterEntity):
 
         # limits character's vertical movement speed
         self.vspeed = vspeed
+
+
+# parent class to all projectiles
+class ProjectileEntity(Entity):
+
+    def adjust_position(self):
+        pass
+
+    # displays the entity on game screen
+    def display(self):
+
+        y_off = 0 if mh.view_root_y < view_height / 2 else mh.view_root_y - view_height / 2
+        x_off = 0 if mh.view_root_x < view_width / 2 else mh.view_root_x - view_width / 2
+
+        pos = int(self.x - x_off*unit), int(self.y - y_off*unit)
+
+        pygame.draw.circle(screen, (0, 255, 0), pos, self.size)
+        pass
+        # todo temp
+
+    # describes workings of the entity
+    # (attacking, jumping, walking, other actions)
+    def work(self):
+        self.spd_y += 0.1
+        self.duration -= 1
+        if self.duration <= 0:
+            self.die()
+
+    # constructor
+    def __init__(self, init_x=0, init_y=0, size=5, spd_x=10, spd_y=-2, drop=0.1, duration=70):
+        Entity.__init__(self, init_x, init_y, size)
+
+        # initial speed
+        self.spd_x = spd_x
+        self.spd_y = spd_y
+
+        # downward acceleration
+        self.drop = drop
+
+        # "life-span" of the projectile
+        self.duration = duration
 

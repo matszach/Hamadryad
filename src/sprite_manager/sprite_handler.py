@@ -126,3 +126,7 @@ class TileSpriteHandler(SpriteHandler):
     def __init__(self, sprite_set_path):
         SpriteHandler.__init__(self, sprite_set_path)
 
+
+# Sprite handler for projectile entities
+class ProjectileSpriteHandler(SpriteHandler):
+    pass

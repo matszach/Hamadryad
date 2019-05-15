@@ -1,5 +1,6 @@
 from src.entities.player.player import PlayerEntity
 from src.entities.monsters.basic_monsters import SimpleFollower
+from src.entities.entity import ProjectileEntity
 import src.maps.map_handler as mh
 from src.util.game_constants import view_width, view_height
 
@@ -7,18 +8,25 @@ player = PlayerEntity(sprite_set_path='resources/sprites/character.png', hspeed=
 monsters = []
 projectiles = []
 
-monsters.append(SimpleFollower(sprite_set_path='resources/sprites/template16.png', hspeed=2))
-monsters.append(SimpleFollower(sprite_set_path='resources/sprites/template16.png', hspeed=3, init_x=330))
+monsters.append(SimpleFollower(sprite_set_path='resources/sprites/template16.png', hspeed=2, jump_speed=25))
+monsters.append(SimpleFollower(sprite_set_path='resources/sprites/template16.png', hspeed=3, init_x=330, jump_speed=20))
 
+projectiles.append(ProjectileEntity(init_y=300))
 
 def run_monsters():
     for m in monsters:
-        m.act()
+        if m.dead:
+            monsters.remove(m)
+        else:
+            m.act()
 
 
 def run_projectiles():
     for p in projectiles:
-        p.act()
+        if p.dead:
+            projectiles.remove(p)
+        else:
+            p.act()
 
 
 def run_player():
