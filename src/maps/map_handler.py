@@ -12,22 +12,34 @@ sprite_handlers = {
     1: TileSpriteHandler('resources/sprites/tile_stone.png')
 }
 
+# current view root (based on player's location)
+view_root_x = 0
+view_root_y = 0
+
 
 # draws level from current root position
-def draw_level(root_x, root_y):
-    xm = (root_x % gc.unit)*gc.unit
-    ym = (root_x % gc.unit)*gc.unit
-    for y in range(int(gc.game_window_size[1]/gc.unit)):
-        for x in range(int(gc.game_window_size[0]/gc.unit)):
-            field_id = current_level[round(root_y)+y][round(root_x)+x][0]
+def draw_level():
+
+    xm = (view_root_x % 1)
+    ym = (view_root_y % 1)
+    
+    x_start = int((view_root_x - xm) - 16)
+    y_start = int((view_root_y - ym) - 10)
+    
+    for y in range(20+1):
+        for x in range(32+1):
+
+            field_id = current_level[y_start+y][x_start+x][0]
+
             if not field_id == 0:
-                sub_ind = current_level[round(root_y)+y][round(root_x)+x][1]
+                sub_ind = current_level[y_start+y][x_start+x][1]
                 handler = sprite_handlers[field_id]
                 sprite = handler.get_subtype_sprite(sub_ind)
+
                 # convert to pygame surface
                 surface = pygame.image.fromstring(sprite.tobytes(), sprite.size, sprite.mode)
                 surface = pygame.transform.scale(surface, (gc.unit, gc.unit))
-                surface_rect = (x * gc.unit - xm, y*gc.unit - ym)
+                surface_rect = ((x-xm) * gc.unit, (y-ym)*gc.unit)
                 screen.blit(surface, surface_rect)
 
 

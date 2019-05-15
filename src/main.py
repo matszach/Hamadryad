@@ -3,7 +3,7 @@ import src.util.game_constants as vc
 import src.view.view as view
 from src.event_handler.event_handler import handle
 from src.maps.map_handler import draw_level
-from src.entities.entity_handler import run_monsters, run_projectiles, player
+from src.entities.entity_handler import run_monsters, run_projectiles, run_player, adjust_view_root
 from src.event_handler import key_handler
 
 # displayed application name
@@ -23,15 +23,18 @@ while True:
     view.clear_screen()
 
     # todo make this dependant on player position
-    draw_level(0, 0)
+    draw_level()
 
     # monsters and projectiles act
     run_monsters()
     run_projectiles()
 
     # player acts
-    player.act()
+    run_player()
     key_handler.execute()
+
+    # view root is adjusted ("follows player")
+    adjust_view_root()
 
     # draws on display
     pygame.display.update()

@@ -2,7 +2,7 @@ import pygame
 from src.view.view import main_game_screen as screen
 from src.sprite_manager.sprite_handler import CharacterSpriteHandler
 import src.entities.entity_constants as ec
-from src.maps.map_handler import current_level
+import src.maps.map_handler as mh
 from src.util.game_constants import unit
 
 
@@ -24,22 +24,22 @@ class Entity:
     def possible_move_left(self):
         lv_y = round(self.get_y_unit())
         lv_x = round(self.get_x_unit() - 0.5)
-        return current_level[lv_y][lv_x][0] == 0  # todo
+        return mh.current_level[lv_y][lv_x][0] == 0  # todo
 
     def possible_move_right(self):
         lv_y = round(self.get_y_unit())
         lv_x = round(self.get_x_unit() + 0.5)
-        return current_level[lv_y][lv_x][0] == 0  # todo
+        return mh.current_level[lv_y][lv_x][0] == 0  # todo
 
     def possible_move_up(self):
         lv_y = round(self.get_y_unit() - 0.5)
         lv_x = round(self.get_x_unit())
-        return current_level[lv_y][lv_x][0] == 0  # todo
+        return mh.current_level[lv_y][lv_x][0] == 0  # todo
 
     def possible_move_down(self):
         lv_y = round(self.get_y_unit() + 0.5)
         lv_x = round(self.get_x_unit())
-        return current_level[lv_y][lv_x][0] == 0  #todo
+        return mh.current_level[lv_y][lv_x][0] == 0  #todo
 
     # describes total of everything that the entity does during one frame
     def act(self):

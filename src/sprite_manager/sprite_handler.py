@@ -30,7 +30,7 @@ class SpriteHandler:
 class CharacterSpriteHandler(SpriteHandler):
 
     # animation timer limit
-    a_lim = 31
+    a_lim = 23
 
     # static sprite dictionary
     sprite_paths = {
@@ -71,7 +71,7 @@ class CharacterSpriteHandler(SpriteHandler):
 
         is_hor_mov = not spd_x == 0
         ver_mov = 0 if spd_y == 0 else int(spd_y/abs(spd_y))
-        sprite_loc = self.sprite_paths[(is_hor_mov, ver_mov, int(self.animation_timer/8))]
+        sprite_loc = self.sprite_paths[(is_hor_mov, ver_mov, int(self.animation_timer/6))]
 
         sprite = self.get_sprite_at(sprite_loc[1], sprite_loc[0])
 
