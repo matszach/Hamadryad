@@ -78,7 +78,7 @@ class Entity:
     # prevents the entity getting stuck in a wall/floor todo complete
     def adjust_position(self):
         if not self.possible_move_down():
-            self.y -= self.y % unit
+            self.y -= round(self.y % unit)
 
     # applies current speed as movement
     def travel(self):
