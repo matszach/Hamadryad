@@ -2,7 +2,10 @@ game_name = 'Hamadryad'
 
 unit = 32
 
-game_window_size = 32*unit, 20*unit
+view_width = 32
+view_height = 20
+
+game_window_size = view_width*unit, view_height*unit
 
 game_frame_delay = 30
 

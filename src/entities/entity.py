@@ -3,7 +3,7 @@ from src.view.view import main_game_screen as screen
 from src.sprite_manager.sprite_handler import CharacterSpriteHandler
 import src.entities.entity_constants as ec
 import src.maps.map_handler as mh
-from src.util.game_constants import unit
+from src.util.game_constants import unit, view_height, view_width
 
 
 # parent class to all in-game entities
@@ -151,7 +151,11 @@ class CharacterEntity(Entity):
         sprite = self.sprite_handler.pick_sprite(self.spd_x, self.spd_y)
         surface = pygame.image.fromstring(sprite.tobytes(), sprite.size, sprite.mode)  # convert to pygame surface
         surface = pygame.transform.scale(surface, (self.size, self.size))
-        surface_rect = (self.x, self.y)
+
+        y_off = 0 if mh.view_root_y < view_height/2 else mh.view_root_y - view_height/2
+        x_off = 0 if mh.view_root_x < view_width/2 else mh.view_root_x - view_width/2
+
+        surface_rect = (self.x - x_off * unit, self.y - y_off * unit)
         screen.blit(surface, surface_rect)
 
     # constructor

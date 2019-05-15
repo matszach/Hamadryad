@@ -15,6 +15,8 @@ sprite_handlers = {
 # current view root (based on player's location)
 view_root_x = 0
 view_root_y = 0
+player_x = 0
+player_y = 0
 
 
 # draws level from current root position
