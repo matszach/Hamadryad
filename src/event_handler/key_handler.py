@@ -19,10 +19,15 @@ def execute():
         player.jump()
 
     # actions
-    if keys[pygame.K_o]:
+    if keys[pygame.K_7]:
         player.action_1()
-    elif keys[pygame.K_p]:
+    elif keys[pygame.K_8]:
         player.action_2()
+    elif keys[pygame.K_9]:
+        player.action_3()
+    elif keys[pygame.K_0]:
+        player.action_4()
+
 
 
 

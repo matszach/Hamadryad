@@ -18,24 +18,16 @@ class Entity:
 
     # movement-in-direction-possible checking
     def possible_move_left(self):
-        lv_y = round(self.get_y_unit())
-        lv_x = round(self.get_x_unit() - 0.5*self.size/unit)
-        return mh.current_level[lv_y][lv_x][0] == 0  # todo
+        return True
 
     def possible_move_right(self):
-        lv_y = round(self.get_y_unit())
-        lv_x = round(self.get_x_unit() + 0.5*self.size/unit)
-        return mh.current_level[lv_y][lv_x][0] == 0  # todo
+        return True
 
     def possible_move_up(self):
-        lv_y = round(self.get_y_unit() - 0.5*self.size/unit)
-        lv_x = round(self.get_x_unit())
-        return mh.current_level[lv_y][lv_x][0] == 0  # todo
+        return True
 
     def possible_move_down(self):
-        lv_y = round(self.get_y_unit() + 0.5*self.size/unit)
-        lv_x = round(self.get_x_unit())
-        return mh.current_level[lv_y][lv_x][0] == 0  #todo
+        return True
 
     # describes total of everything that the entity does during one frame
     def act(self):
@@ -110,6 +102,27 @@ class Entity:
 # parent class to all characters (Monsters, Player ...)
 class CharacterEntity(Entity):
 
+    # movement-in-direction-possible checking
+    def possible_move_left(self):
+        lv_y = round(self.get_y_unit())
+        lv_x = round(self.get_x_unit() - 0.5*self.size/unit)
+        return mh.current_level[lv_y][lv_x][0] == 0  # todo
+
+    def possible_move_right(self):
+        lv_y = round(self.get_y_unit())
+        lv_x = round(self.get_x_unit() + 0.5*self.size/unit)
+        return mh.current_level[lv_y][lv_x][0] == 0  # todo
+
+    def possible_move_up(self):
+        lv_y = round(self.get_y_unit() - 0.5*self.size/unit)
+        lv_x = round(self.get_x_unit())
+        return mh.current_level[lv_y][lv_x][0] == 0  # todo
+
+    def possible_move_down(self):
+        lv_y = round(self.get_y_unit() + 0.5*self.size/unit)
+        lv_x = round(self.get_x_unit())
+        return mh.current_level[lv_y][lv_x][0] == 0  #todo
+
     # character moves left
     def move_left(self):
         self.spd_x -= ec.move_acc_increment*self.hspeed
@@ -131,14 +144,6 @@ class CharacterEntity(Entity):
                 self.spd_x += ec.slow_down_increment
                 if self.spd_x > 0:
                     self.spd_x = 0
-
-    # character's first action
-    def action_1(self):
-        pass  # todo
-
-    # character's second action
-    def action_2(self):
-        pass  # todo
 
     # character is damaged
     def take_damage(self, dmg):
@@ -255,13 +260,13 @@ class ProjectileEntity(Entity):
     # describes workings of the entity
     # (attacking, jumping, walking, other actions)
     def work(self):
-        self.spd_y += 0.1
+        self.spd_y += self.drop
         self.duration -= 1
         if self.duration <= 0:
             self.die()
 
     # constructor
-    def __init__(self, init_x=0, init_y=0, size=5, spd_x=10, spd_y=-2, drop=0.1, duration=70):
+    def __init__(self, init_x=0, init_y=0, size=5, spd_x=10, spd_y=-2, drop=0.0, duration=70):
         Entity.__init__(self, init_x, init_y, size)
 
         # initial speed
